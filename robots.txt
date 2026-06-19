@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://grauntischo.github.io/portal-cn-mahjong-com-2/sitemap.xml

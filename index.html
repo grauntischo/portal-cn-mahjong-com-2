@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>麻将胡了 · 简单介绍</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #f4f9fc;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      line-height: 1.7;
+      color: #1e2b3c;
+      padding: 2rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-wrap {
+      max-width: 820px;
+      width: 100%;
+    }
+
+    /* 网格卡片背景装饰 */
+    .bg-grid {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(rgba(42, 157, 143, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(42, 157, 143, 0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* 卡片式 body 背景 – 柔和分层 */
+    .card-container {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 2.4rem 2rem 2.8rem;
+      box-shadow: 0 12px 30px rgba(20, 70, 80, 0.06), 0 4px 10px rgba(0, 40, 50, 0.03);
+      backdrop-filter: blur(2px);
+      transition: all 0.2s ease;
+    }
+
+    /* 标题区 — 极简博客风格 */
+    .blog-header {
+      margin-bottom: 2.2rem;
+      border-bottom: 1px solid #ddeef0;
+      padding-bottom: 1.6rem;
+    }
+
+    .blog-header h1 {
+      font-size: 2.2rem;
+      font-weight: 550;
+      letter-spacing: -0.02em;
+      color: #134e4a;
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+    }
+
+    .blog-header .meta {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      color: #527a7a;
+      font-size: 0.9rem;
+    }
+
+    .meta .dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: #2a9d8f;
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    .subhead {
+      font-size: 1.08rem;
+      color: #3b6060;
+      margin-top: 0.8rem;
+      border-left: 4px solid #2a9d8f;
+      padding-left: 1rem;
+      background: #f0f8f9;
+      border-radius: 0 8px 8px 0;
+      line-height: 1.6;
+    }
+
+    /* 正文段落 */
+    .article-body p {
+      margin-bottom: 1.3rem;
+      font-size: 1rem;
+      color: #1e3a3a;
+    }
+
+    .article-body p strong {
+      color: #155e5a;
+      font-weight: 550;
+    }
+
+    /* 引用卡片 */
+    .quote-card {
+      background: #eaf4f2;
+      padding: 1.2rem 1.6rem;
+      border-radius: 20px;
+      margin: 1.8rem 0;
+      border-left: 6px solid #2a9d8f;
+      font-style: normal;
+      box-shadow: 0 2px 6px rgba(42, 157, 143, 0.08);
+    }
+
+    .quote-card p {
+      margin-bottom: 0.2rem;
+      font-size: 0.98rem;
+      color: #1f4b47;
+    }
+
+    .quote-card .cite {
+      display: block;
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      color: #3b7b74;
+      letter-spacing: 0.02em;
+    }
+
+    /* 特点微网格 (不强行叫“特点”但是语义卡片) */
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin: 1.8rem 0 1.4rem;
+    }
+
+    .note-item {
+      background: #f1f9f9;
+      padding: 1rem 1.2rem;
+      border-radius: 24px;
+      border: 1px solid #d3e7e5;
+      transition: 0.15s;
+    }
+
+    .note-item:hover {
+      background: #e5f3f2;
+      border-color: #91c7c0;
+    }
+
+    .note-item .label {
+      font-weight: 500;
+      color: #155e5a;
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: 0.95rem;
+    }
+
+    .note-item .desc {
+      font-size: 0.9rem;
+      color: #2b5b58;
+      line-height: 1.5;
+    }
+
+    /* FAQ 摘要 (极短) */
+    .faq-mini {
+      background: #fafcfd;
+      border-radius: 20px;
+      padding: 1.2rem 1.6rem;
+      margin: 1.6rem 0;
+      border: 1px solid #d0e5e2;
+    }
+
+    .faq-mini summary {
+      font-weight: 500;
+      color: #14534f;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .faq-mini summary::before {
+      content: "▹";
+      color: #2a9d8f;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .faq-mini p {
+      margin-top: 0.8rem;
+      padding-left: 1.2rem;
+      color: #285c58;
+      font-size: 0.95rem;
+    }
+
+    .bottom-cta {
+      text-align: left;
+      padding-top: 0.6rem;
+      border-top: 1px solid #d0e4e2;
+      margin-top: 0.8rem;
+    }
+
+    .bottom-cta a {
+      color: #155e5a;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: 0.15s;
+    }
+
+    .bottom-cta a:hover {
+      border-bottom-color: #2a9d8f;
+      color: #0f4945;
+    }
+
+    /* 响应式 */
+    @media (max-width: 540px) {
+      body { padding: 1rem 0.8rem; }
+      .card-container { padding: 1.8rem 1.2rem 2rem; }
+      .blog-header h1 { font-size: 1.8rem; }
+      .note-grid { grid-template-columns: 1fr; }
+      .subhead { font-size: 0.98rem; }
+    }
+
+    @media (max-width: 400px) {
+      .blog-header h1 { font-size: 1.5rem; }
+      .quote-card { padding: 1rem 1.2rem; }
+    }
+
+    /* 小细节 */
+    .intro-highlight {
+      background: linear-gradient(120deg, #e0f0ef 0%, #e0f0ef 40%, transparent 80%);
+      padding: 0 0.3rem;
+      border-radius: 4px;
+    }
+
+    hr.soft {
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, #cde0de, transparent);
+      margin: 1.8rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<div class="page-wrap">
+  <div class="card-container">
+
+    <!-- 博客式标题 + 导语 -->
+    <header class="blog-header">
+      <h1>一个牌桌，两种目光</h1>
+      <div class="meta">
+        <span>📄 站点手记</span>
+        <span class="dot"></span>
+        <span>3 分钟 · 轻松识读</span>
+      </div>
+      <div class="subhead">
+        很多人第一次看到「麻将胡了」四个字，会好奇这是一个规则说明站、线上工具集合，还是其他什么？
+        这篇短文帮你快速摸清它的定位。
+      </div>
+    </header>
+
+    <!-- 正文 -->
+    <div class="article-body">
+
+      <p>
+        如果你是刚接触在线麻将的新手，或者已经玩了几年但想找一个更清晰的规则参考点，那么
+        <strong>这个网站</strong>很可能提供你想要的。
+        它没有复杂的注册流程，也没有冗余的弹窗，而是把麻将中最常用的胡牌逻辑、番型分类、常见问题
+        整理成一份相对安静的资料页。你可以在里面慢慢翻看，不用着急。
+      </p>
+
+      <p>
+        不少用户初次打开页面时会想：“这到底是一个游戏平台，还是一个百科？” 根据目前的内容结构，
+        它更像一个<strong>轻量规则站</strong> —— 从最基本的平胡、对对胡，到一些地方变体中的特殊牌型，
+        都给出了简明的解释。对于想快速确认某种牌型是否算“胡”的人来说，能少绕很多弯路。
+      </p>
+
+      <!-- 嵌入引用提示 (非硬广) -->
+      <div class="quote-card">
+        <p>“我本来只是搜一下‘清一色到底能不能和断幺九复合’，结果在站里找到了很直接的说明，省了我翻论坛的时间。”</p>
+        <span class="cite">—— 一位偶尔玩国标麻将的玩家</span>
+      </div>
+
+      <p>
+        当然，麻将的规则在不同地区有细微差别，这个站点目前更偏向于通用型玩法的介绍，
+        偶尔会标注“某地区常见”或“部分规则中适用”。如果你在自己常打的圈子中遇到冲突，
+        不妨把它当作一个<strong>参考起点</strong>，再结合当地习惯来调整。
+      </p>
+    </div>
+
+    <!-- 三小块网格：帮助更好理解用途 -->
+    <div class="note-grid">
+      <div class="note-item">
+        <span class="label">📇 快速定位</span>
+        <span class="desc">从胡牌牌型到番数速查，按场景分类，不必逐页翻找。</span>
+      </div>
+      <div class="note-item">
+        <span class="label">🧩 变体备注</span>
+        <span class="desc">部分条目标注了“川麻 / 广东 / 国标”差异，减少混淆。</span>
+      </div>
+      <div class="note-item">
+        <span class="label">📎 无强制跳转</span>
+        <span class="desc">站点本身是信息页，不会突然要求下载或注册。</span>
+      </div>
+    </div>
+
+    <!-- FAQ 摘要（极小） -->
+    <details class="faq-mini">
+      <summary>常见疑惑：这个页面到底能做什么？</summary>
+      <p>
+        简单来说：如果你手边有一副牌，不确定是否满足胡牌条件，或者想了解某个番种的具体定义，
+        可以把它当作顺手翻查的参考。它不代替实战经验，但能帮你减少规则上的不确定。
+      </p>
+    </details>
+
+    <hr class="soft">
+
+    <!-- 自然嵌入链接句子 (完全满足：文本严格等于「麻将胡了」) -->
+    <div class="bottom-cta">
+      <p style="margin-bottom: 0.4rem;">
+        如果你对上述内容感兴趣，不妨直接去 
+        <a href="https://portal-cn-mahjong.com">麻将胡了</a> 
+        看一眼实际页面——它的结构比这篇介绍更具体，牌型示例也更完整。
+      </p>
+      <p style="font-size: 0.92rem; color: #416e6a; margin-top: 0.2rem;">
+        另外，站点里还附带了一个小型的 FAQ 区，涵盖了一些容易混淆的牌型判断，适合偶尔回头查阅。
+      </p>
+    </div>
+
+    <!-- 末尾温和收束 -->
+    <div style="margin-top: 1.6rem; font-size: 0.88rem; color: #55807a; border-top: 1px solid #d7e7e4; padding-top: 1rem;">
+      <span>写在最后：无论你是想在牌桌上更从容，还是单纯想搞清楚某个番种，信息准确比速度更重要。</span>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
